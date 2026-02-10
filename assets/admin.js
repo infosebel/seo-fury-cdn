@@ -963,7 +963,7 @@
           <td>${(p.applicablePlans || []).map(function (pl) { return '<span class="sf-badge ' + planBadgeClass(pl) + '">' + planLabel(pl) + '</span>'; }).join(' ')}</td>
           <td>${progressHtml}</td>
           <td>${p.expiresAt ? formatDate(p.expiresAt) : 'Никогда'}</td>
-          <td><span class="sf-badge ${p.isActive ? 'active' : 'inactive'}">${p.isActive ? 'Активный' : 'Неактивный'}</span></td>
+          <td><span class="sf-badge ${p.expiresAt && new Date(p.expiresAt) < new Date() ? 'inactive' : p.isActive ? 'active' : 'inactive'}">${p.expiresAt && new Date(p.expiresAt) < new Date() ? 'Истёк' : p.isActive ? 'Активный' : 'Неактивный'}</span></td>
           <td>${formatDate(p.createdAt)}</td>
           <td class="sf-actions">
             <button class="sf-btn ${p.isActive ? 'secondary' : ''} sf-btn-sm" data-toggle-promo="${p._id}" data-active="${p.isActive}">
