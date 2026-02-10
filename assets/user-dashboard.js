@@ -583,7 +583,7 @@
         badge: 'free',
         highlight: false,
         features: [
-          { text: '1 сайт', on: true },
+          { text: 'Безлимитное кол-во сайтов', on: true },
           { text: 'Базовые SEO функции', on: true },
           { text: '50 редиректов', on: true },
           { text: '100 404 логов', on: true },
