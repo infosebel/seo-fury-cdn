@@ -53,7 +53,7 @@
     });
     var res = await fetch(API + path, Object.assign({}, opts, { headers: headers }));
     var data = await res.json();
-    if (!res.ok || data.success === false) throw new Error(data.error || 'Request failed');
+    if (!res.ok || data.success === false) throw new Error(data.error || 'Ошибка запроса');
     return data;
   }
 
@@ -73,18 +73,18 @@
 
   function formatDate(d) {
     if (!d) return '-';
-    return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    return new Date(d).toLocaleDateString('ru-RU', { month: 'short', day: 'numeric', year: 'numeric' });
   }
 
   function planLabel(plan) {
     var map = {
-      free: 'Free',
+      free: 'Бесплатный',
       pro_starter: 'Pro Starter',
       pro_business: 'Pro Business',
       pro_agency: 'Pro Agency',
-      lifetime: 'Lifetime'
+      lifetime: 'Пожизненный'
     };
-    return map[plan] || plan || 'Free';
+    return map[plan] || plan || 'Бесплатный';
   }
 
   function planBadgeClass(plan) {
@@ -99,7 +99,7 @@
   }
 
   function copyToClipboard(text) {
-    navigator.clipboard.writeText(text).then(function () { showToast('Copied!'); });
+    navigator.clipboard.writeText(text).then(function () { showToast('Скопировано!'); });
   }
 
   function loadingHtml() {
@@ -144,15 +144,15 @@
       <div class="sf-admin-header">\
         <div class="sf-logo">&#9889; SEO Fury</div>\
         <nav class="sf-admin-nav">\
-          <a href="/dashboard/my-licenses" data-route="/dashboard/my-licenses" class="' + (active === 'licenses' ? 'active' : '') + '">My Licenses</a>\
-          <a href="/dashboard/my-domains" data-route="/dashboard/my-domains" class="' + (active === 'domains' ? 'active' : '') + '">My Domains</a>\
-          <a href="/dashboard/pricing" data-route="/dashboard/pricing" class="' + (active === 'pricing' ? 'active' : '') + '">Pricing</a>\
-          <a href="/dashboard/my-profile" data-route="/dashboard/my-profile" class="' + (active === 'profile' ? 'active' : '') + '">My Profile</a>\
+          <a href="/dashboard/my-licenses" data-route="/dashboard/my-licenses" class="' + (active === 'licenses' ? 'active' : '') + '">Мои лицензии</a>\
+          <a href="/dashboard/my-domains" data-route="/dashboard/my-domains" class="' + (active === 'domains' ? 'active' : '') + '">Мои домены</a>\
+          <a href="/dashboard/pricing" data-route="/dashboard/pricing" class="' + (active === 'pricing' ? 'active' : '') + '">Тарифы</a>\
+          <a href="/dashboard/my-profile" data-route="/dashboard/my-profile" class="' + (active === 'profile' ? 'active' : '') + '">Мой профиль</a>\
         </nav>\
         <div class="sf-header-right">\
           <div class="sf-user-header-avatar">' + escapeHtml(initials) + '</div>\
           <span class="sf-muted sf-user-email-header">' + escapeHtml(user?.email || '') + '</span>\
-          <button class="sf-btn secondary" id="sf-logout">Logout</button>\
+          <button class="sf-btn secondary" id="sf-logout">Выход</button>\
         </div>\
       </div>\
       <div class="sf-admin-container">\
@@ -197,43 +197,43 @@
           <div class="sf-profile-info">\
             <h2>' + escapeHtml(u.name || u.firstName || 'User') + '</h2>\
             <p class="sf-muted">' + escapeHtml(u.email) + '</p>\
-            <p class="sf-muted" style="margin-top:4px">Member since ' + memberSince + '</p>\
+            <p class="sf-muted" style="margin-top:4px">Участник с ' + memberSince + '</p>\
             <div style="margin-top:8px">' +
               (u.isEmailVerified
-                ? '<span class="sf-badge active">&#10003; Email Verified</span>'
-                : '<span class="sf-badge inactive">&#10007; Email Not Verified</span>\
-                   <button class="sf-btn sf-btn-sm" id="resendVerification" style="margin-left:8px">Resend Verification</button>') +
+                ? '<span class="sf-badge active">&#10003; Email подтверждён</span>'
+                : '<span class="sf-badge inactive">&#10007; Email не подтверждён</span>\
+                   <button class="sf-btn sf-btn-sm" id="resendVerification" style="margin-left:8px">Отправить повторно</button>') +
           '\
           </div>\
         </div>\
         <div class="sf-profile-grid">\
           <div class="sf-admin-card">\
-            <h3>&#128100; Personal Information</h3>\
+            <h3>&#128100; Личные данные</h3>\
             <div class="sf-form-group">\
-              <label class="sf-label">First Name</label>\
-              <input class="sf-input sf-full-width" id="profFirstName" value="' + escapeHtml(u.firstName || '') + '" placeholder="Your first name" />\
+              <label class="sf-label">Имя</label>\
+              <input class="sf-input sf-full-width" id="profFirstName" value="' + escapeHtml(u.firstName || '') + '" placeholder="Ваше имя" />\
             </div>\
             <div class="sf-form-group">\
-              <label class="sf-label">Last Name</label>\
-              <input class="sf-input sf-full-width" id="profLastName" value="' + escapeHtml(u.lastName || '') + '" placeholder="Your last name" />\
+              <label class="sf-label">Фамилия</label>\
+              <input class="sf-input sf-full-width" id="profLastName" value="' + escapeHtml(u.lastName || '') + '" placeholder="Ваша фамилия" />\
             </div>\
-            <button class="sf-btn" id="saveProfile" style="margin-top:8px">Save Changes</button>\
+            <button class="sf-btn" id="saveProfile" style="margin-top:8px">Сохранить</button>\
           </div>\
           <div class="sf-admin-card">\
-            <h3>&#128274; Change Password</h3>\
+            <h3>&#128274; Сменить пароль</h3>\
             <div class="sf-form-group">\
-              <label class="sf-label">Current Password</label>\
-              <input class="sf-input sf-full-width" id="curPassword" type="password" placeholder="Enter current password" />\
+              <label class="sf-label">Текущий пароль</label>\
+              <input class="sf-input sf-full-width" id="curPassword" type="password" placeholder="Введите текущий пароль" />\
             </div>\
             <div class="sf-form-group">\
-              <label class="sf-label">New Password</label>\
-              <input class="sf-input sf-full-width" id="newPassword" type="password" placeholder="At least 8 characters" />\
+              <label class="sf-label">Новый пароль</label>\
+              <input class="sf-input sf-full-width" id="newPassword" type="password" placeholder="Минимум 8 символов" />\
             </div>\
             <div class="sf-form-group">\
-              <label class="sf-label">Confirm New Password</label>\
-              <input class="sf-input sf-full-width" id="confirmPassword" type="password" placeholder="Repeat new password" />\
+              <label class="sf-label">Подтвердите пароль</label>\
+              <input class="sf-input sf-full-width" id="confirmPassword" type="password" placeholder="Повторите новый пароль" />\
             </div>\
-            <button class="sf-btn" id="changePassword" style="margin-top:8px">Change Password</button>\
+            <button class="sf-btn" id="changePassword" style="margin-top:8px">Сменить пароль</button>\
           </div>\
         </div>\
       ';
@@ -258,7 +258,7 @@
             user.name = (firstName + ' ' + lastName).trim();
             localStorage.setItem('user', JSON.stringify(user));
           }
-          showToast('Profile updated successfully');
+          showToast('Профиль обновлён');
         } catch (e) {
           showToast(e.message, 'error');
         }
@@ -269,15 +269,15 @@
         var cur = document.getElementById('curPassword').value;
         var newP = document.getElementById('newPassword').value;
         var conf = document.getElementById('confirmPassword').value;
-        if (!cur || !newP) { showToast('Please fill in all fields', 'error'); return; }
-        if (newP.length < 8) { showToast('New password must be at least 8 characters', 'error'); return; }
-        if (newP !== conf) { showToast('Passwords do not match', 'error'); return; }
+        if (!cur || !newP) { showToast('Заполните все поля', 'error'); return; }
+        if (newP.length < 8) { showToast('Новый пароль должен быть не менее 8 символов', 'error'); return; }
+        if (newP !== conf) { showToast('Пароли не совпадают', 'error'); return; }
         try {
           await api('/user/change-password', {
             method: 'PUT',
             body: JSON.stringify({ currentPassword: cur, newPassword: newP })
           });
-          showToast('Password changed successfully');
+          showToast('Пароль изменён');
           document.getElementById('curPassword').value = '';
           document.getElementById('newPassword').value = '';
           document.getElementById('confirmPassword').value = '';
@@ -292,9 +292,9 @@
         resendBtn.onclick = async function () {
           try {
             await api('/auth/resend-verification', { method: 'POST' });
-            showToast('Verification email sent! Check your inbox.');
+            showToast('Письмо отправлено! Проверьте почту.');
             resendBtn.disabled = true;
-            resendBtn.textContent = 'Sent!';
+            resendBtn.textContent = 'Отправлено!';
           } catch (e) {
             showToast(e.message, 'error');
           }
@@ -320,9 +320,9 @@
         view.innerHTML = '\
           <div class="sf-admin-card sf-text-center" style="padding:48px">\
             <div style="font-size:48px;margin-bottom:16px">&#128220;</div>\
-            <h3>No Licenses Yet</h3>\
-            <p class="sf-muted" style="margin-top:8px">You don\'t have any licenses. Check our pricing plans!</p>\
-            <button class="sf-btn" style="margin-top:16px" id="goToPricing">View Pricing</button>\
+            <h3>Лицензий пока нет</h3>\
+            <p class="sf-muted" style="margin-top:8px">У вас ещё нет лицензий. Ознакомьтесь с тарифами!</p>\
+            <button class="sf-btn" style="margin-top:16px" id="goToPricing">Смотреть тарифы</button>\
           </div>\
         ';
         document.getElementById('goToPricing').onclick = function () { navigateTo('/dashboard/pricing'); };
@@ -333,13 +333,13 @@
         var domainsUsed = (l.activeDomains || []).length;
         var maxDomains = l.maxDomains || 1;
         var domainsPercent = Math.min(100, Math.round((domainsUsed / maxDomains) * 100));
-        var maxLabel = maxDomains >= 999999 ? 'Unlimited' : maxDomains;
+        var maxLabel = maxDomains >= 999999 ? 'Безлимит' : maxDomains;
 
         var features = l.features || {};
         var featuresList = '';
-        featuresList += '<li class="' + (features.advancedSeo ? 'sf-feature-on' : 'sf-feature-off') + '">Advanced SEO</li>';
+        featuresList += '<li class="' + (features.advancedSeo ? 'sf-feature-on' : 'sf-feature-off') + '">Расширенное SEO</li>';
         featuresList += '<li class="' + (features.whiteLabel ? 'sf-feature-on' : 'sf-feature-off') + '">White Label</li>';
-        featuresList += '<li class="' + (features.prioritySupport ? 'sf-feature-on' : 'sf-feature-off') + '">Priority Support</li>';
+        featuresList += '<li class="' + (features.prioritySupport ? 'sf-feature-on' : 'sf-feature-off') + '">Приоритетная поддержка</li>';
 
         var domainsList = (l.activeDomains || []).map(function (d) {
           return '<div class="sf-domain-item">\
@@ -347,21 +347,21 @@
             <span>' + escapeHtml(d.domain) + '</span>\
             <span class="sf-muted" style="margin-left:auto">' + formatDate(d.lastValidated || d.activatedAt) + '</span>\
           </div>';
-        }).join('') || '<p class="sf-muted" style="padding:12px 0">No domains connected yet</p>';
+        }).join('') || '<p class="sf-muted" style="padding:12px 0">Домены не подключены</p>';
 
         var statusBadge = l.status === 'active'
-          ? '<span class="sf-badge active">Active</span>'
+          ? '<span class="sf-badge active">Активна</span>'
           : '<span class="sf-badge inactive">' + escapeHtml(l.status) + '</span>';
 
         var expiryInfo = '';
         if (l.plan === 'lifetime' || l.plan === 'free') {
-          expiryInfo = '<span class="sf-muted">Never expires</span>';
+          expiryInfo = '<span class="sf-muted">Бессрочно</span>';
         } else if (l.expiresAt) {
           var daysLeft = Math.ceil((new Date(l.expiresAt) - new Date()) / (1000 * 60 * 60 * 24));
           if (daysLeft > 0) {
-            expiryInfo = '<span class="sf-muted">' + daysLeft + ' days remaining</span>';
+            expiryInfo = '<span class="sf-muted">' + daysLeft + ' дн. осталось</span>';
           } else {
-            expiryInfo = '<span style="color:#ef4444;font-weight:500">Expired</span>';
+            expiryInfo = '<span style="color:#ef4444;font-weight:500">Истекла</span>';
           }
         }
 
@@ -380,7 +380,7 @@
             <div class="sf-license-card-body">\
               <div class="sf-license-meta">\
                 <div class="sf-license-meta-item">\
-                  <span class="sf-label">Domains</span>\
+                  <span class="sf-label">Домены</span>\
                   <div class="sf-progress-wrap" style="margin-top:4px">\
                     <div class="sf-progress" style="min-width:100px">\
                       <div class="sf-progress-bar" style="width:' + domainsPercent + '%"></div>\
@@ -389,20 +389,20 @@
                   </div>\
                 </div>\
                 <div class="sf-license-meta-item">\
-                  <span class="sf-label">Expiry</span>\
+                  <span class="sf-label">Срок действия</span>\
                   <div style="margin-top:4px">' + expiryInfo + '</div>\
                 </div>\
                 <div class="sf-license-meta-item">\
-                  <span class="sf-label">Validations</span>\
+                  <span class="sf-label">Проверки</span>\
                   <div style="margin-top:4px"><strong>' + (l.validationCount || 0) + '</strong></div>\
                 </div>\
               </div>\
               <div style="margin-top:16px">\
-                <span class="sf-label">Features</span>\
+                <span class="sf-label">Возможности</span>\
                 <ul class="sf-features-list">' + featuresList + '</ul>\
               </div>\
               <div style="margin-top:16px">\
-                <span class="sf-label">Connected Domains</span>\
+                <span class="sf-label">Подключённые домены</span>\
                 <div class="sf-domains-list">' + domainsList + '</div>\
               </div>\
             </div>\
@@ -412,8 +412,8 @@
 
       view.innerHTML = '\
         <div class="sf-page-title-row">\
-          <h2>My Licenses</h2>\
-          <button class="sf-btn" id="goToPricingBtn">Upgrade Plan</button>\
+          <h2>Мои лицензии</h2>\
+          <button class="sf-btn" id="goToPricingBtn">Улучшить план</button>\
         </div>\
       ' + cardsHtml;
 
@@ -456,19 +456,19 @@
       if (licensesWithSlots.length > 0) {
         var optionsHtml = licensesWithSlots.map(function (l) {
           var used = (l.activeDomains || []).length;
-          var max = l.maxDomains >= 999999 ? 'Unlimited' : l.maxDomains;
-          return '<option value="' + l._id + '">' + planLabel(l.plan) + ' (' + escapeHtml(l.licenseKey.substring(0, 14)) + '...) - ' + used + '/' + max + ' domains</option>';
+          var max = l.maxDomains >= 999999 ? 'Безлимит' : l.maxDomains;
+          return '<option value="' + l._id + '">' + planLabel(l.plan) + ' (' + escapeHtml(l.licenseKey.substring(0, 14)) + '...) - ' + used + '/' + max + ' доменов</option>';
         }).join('');
 
         addFormHtml = '\
           <div class="sf-admin-card">\
-            <h3>&#10133; Add Domain</h3>\
+            <h3>&#10133; Добавить домен</h3>\
             <div class="sf-row">\
               <select class="sf-select" id="addDomainLicense">' + optionsHtml + '</select>\
               <input class="sf-input" id="addDomainInput" placeholder="example.com" style="flex:1" />\
-              <button class="sf-btn" id="addDomainBtn">Add Domain</button>\
+              <button class="sf-btn" id="addDomainBtn">Добавить домен</button>\
             </div>\
-            <p class="sf-muted" style="margin-top:8px">Enter your domain without http/https and www. Example: mywebsite.com</p>\
+            <p class="sf-muted" style="margin-top:8px">Введите домен без http/https и www. Пример: mywebsite.com</p>\
           </div>\
         ';
       }
@@ -489,16 +489,16 @@
             </td>\
             <td>' + formatDate(d.activatedAt) + '</td>\
             <td>\
-              <button class="sf-btn danger sf-btn-sm" data-remove-domain="' + escapeHtml(d.domain) + '" data-license-id="' + escapeHtml(d.licenseId) + '">Remove</button>\
+              <button class="sf-btn danger sf-btn-sm" data-remove-domain="' + escapeHtml(d.domain) + '" data-license-id="' + escapeHtml(d.licenseId) + '">Удалить</button>\
             </td>\
           </tr>';
         }).join('');
 
         tableHtml = '\
           <div class="sf-admin-card">\
-            <h3>Connected Domains (' + domains.length + ')</h3>\
+            <h3>Подключённые домены (' + domains.length + ')</h3>\
             <table class="sf-admin-table">\
-              <thead><tr><th>Domain</th><th>License Key</th><th>Activated</th><th></th></tr></thead>\
+              <thead><tr><th>Домен</th><th>Ключ лицензии</th><th>Активирован</th><th></th></tr></thead>\
               <tbody>' + rows + '</tbody>\
             </table>\
           </div>\
@@ -507,15 +507,15 @@
         tableHtml = '\
           <div class="sf-admin-card sf-text-center" style="padding:48px">\
             <div style="font-size:48px;margin-bottom:16px">&#127760;</div>\
-            <h3>No Domains Connected</h3>\
-            <p class="sf-muted" style="margin-top:8px">Add your first domain to start using SEO Fury on your website.</p>\
+            <h3>Нет подключённых доменов</h3>\
+            <p class="sf-muted" style="margin-top:8px">Добавьте ваш первый домен для использования SEO Fury.</p>\
           </div>\
         ';
       }
 
       view.innerHTML = '\
         <div class="sf-page-title-row">\
-          <h2>My Domains</h2>\
+          <h2>Мои домены</h2>\
         </div>\
       ' + addFormHtml + tableHtml;
 
@@ -525,7 +525,7 @@
         addBtn.onclick = async function () {
           var licenseId = document.getElementById('addDomainLicense').value;
           var domain = document.getElementById('addDomainInput').value.trim().toLowerCase();
-          if (!domain) { showToast('Please enter a domain', 'error'); return; }
+          if (!domain) { showToast('Введите домен', 'error'); return; }
           // Clean domain
           domain = domain.replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/+$/, '');
           try {
@@ -533,7 +533,7 @@
               method: 'POST',
               body: JSON.stringify({ domain: domain })
             });
-            showToast('Domain added successfully');
+            showToast('Домен добавлен');
             renderDomains();
           } catch (e) {
             showToast(e.message, 'error');
@@ -551,13 +551,13 @@
         btn.onclick = async function () {
           var domain = btn.dataset.removeDomain;
           var licenseId = btn.dataset.licenseId;
-          if (!confirm('Remove domain "' + domain + '"? You can add it back later.')) return;
+          if (!confirm('Удалить домен "' + domain + '"? Вы сможете добавить его позже.')) return;
           try {
             await api('/user/my-domains/' + licenseId + '/remove', {
               method: 'POST',
               body: JSON.stringify({ domain: domain })
             });
-            showToast('Domain removed');
+            showToast('Домен удалён');
             renderDomains();
           } catch (e) {
             showToast(e.message, 'error');
@@ -577,93 +577,93 @@
 
     var plans = [
       {
-        name: 'Free',
+        name: 'Бесплатный',
         price: '$0',
-        period: 'forever',
+        period: 'навсегда',
         badge: 'free',
         highlight: false,
         features: [
-          { text: '1 Website', on: true },
-          { text: 'Core SEO Features', on: true },
-          { text: '50 Redirects', on: true },
-          { text: '100 404 Logs', on: true },
-          { text: 'Advanced SEO', on: false },
+          { text: '1 сайт', on: true },
+          { text: 'Базовые SEO функции', on: true },
+          { text: '50 редиректов', on: true },
+          { text: '100 404 логов', on: true },
+          { text: 'Расширенное SEO', on: false },
           { text: 'White Label', on: false },
-          { text: 'Priority Support', on: false }
+          { text: 'Приоритетная поддержка', on: false }
         ],
-        cta: 'Current Plan',
+        cta: 'Текущий план',
         ctaDisabled: true
       },
       {
         name: 'Pro Starter',
         price: '$3',
-        period: '/month',
+        period: '/мес',
         badge: 'pro_starter',
         highlight: false,
         features: [
-          { text: '3 Websites', on: true },
-          { text: 'Core SEO Features', on: true },
-          { text: 'Unlimited Redirects', on: true },
-          { text: 'Unlimited 404 Logs', on: true },
-          { text: 'Advanced SEO', on: true },
+          { text: '3 сайта', on: true },
+          { text: 'Базовые SEO функции', on: true },
+          { text: 'Безлимитные редиректы', on: true },
+          { text: 'Безлимитные 404 логи', on: true },
+          { text: 'Расширенное SEO', on: true },
           { text: 'White Label', on: false },
-          { text: 'Priority Support', on: false }
+          { text: 'Приоритетная поддержка', on: false }
         ],
-        cta: 'Upgrade',
+        cta: 'Улучшить',
         ctaDisabled: false
       },
       {
         name: 'Pro Business',
         price: '$12',
-        period: '/month',
+        period: '/мес',
         badge: 'pro_business',
         highlight: true,
         features: [
-          { text: '10 Websites', on: true },
-          { text: 'Core SEO Features', on: true },
-          { text: 'Unlimited Redirects', on: true },
-          { text: 'Unlimited 404 Logs', on: true },
-          { text: 'Advanced SEO', on: true },
+          { text: '10 сайтов', on: true },
+          { text: 'Базовые SEO функции', on: true },
+          { text: 'Безлимитные редиректы', on: true },
+          { text: 'Безлимитные 404 логи', on: true },
+          { text: 'Расширенное SEO', on: true },
           { text: 'White Label', on: true },
-          { text: 'Priority Support', on: true }
+          { text: 'Приоритетная поддержка', on: true }
         ],
-        cta: 'Upgrade',
+        cta: 'Улучшить',
         ctaDisabled: false
       },
       {
         name: 'Pro Agency',
         price: '$27',
-        period: '/month',
+        period: '/мес',
         badge: 'pro_agency',
         highlight: false,
         features: [
-          { text: 'Unlimited Websites', on: true },
-          { text: 'Core SEO Features', on: true },
-          { text: 'Unlimited Redirects', on: true },
-          { text: 'Unlimited 404 Logs', on: true },
-          { text: 'Advanced SEO', on: true },
+          { text: 'Безлимит сайтов', on: true },
+          { text: 'Базовые SEO функции', on: true },
+          { text: 'Безлимитные редиректы', on: true },
+          { text: 'Безлимитные 404 логи', on: true },
+          { text: 'Расширенное SEO', on: true },
           { text: 'White Label', on: true },
-          { text: 'Priority Support', on: true }
+          { text: 'Приоритетная поддержка', on: true }
         ],
-        cta: 'Upgrade',
+        cta: 'Улучшить',
         ctaDisabled: false
       },
       {
-        name: 'Lifetime',
+        name: 'Пожизненный',
         price: '$300',
-        period: 'one-time',
+        period: 'разово',
         badge: 'lifetime',
         highlight: false,
         features: [
-          { text: 'Unlimited Websites', on: true },
-          { text: 'All Pro Features', on: true },
-          { text: 'Unlimited Redirects', on: true },
-          { text: 'Unlimited 404 Logs', on: true },
-          { text: 'Advanced SEO', on: true },
+          { text: 'Безлимит сайтов', on: true },
+          { text: 'Все Pro функции', on: true },
+          { text: 'Безлимитные редиректы', on: true },
+          { text: 'Безлимитные 404 логи', on: true },
+          { text: 'Расширенное SEO', on: true },
           { text: 'White Label', on: true },
-          { text: 'Priority Support', on: true }
+          { text: 'Приоритетная поддержка', on: true }
         ],
-        cta: 'Buy Lifetime',
+        cta: 'Купить навсегда',
         ctaDisabled: false
       }
     ];
@@ -677,7 +677,7 @@
 
       return '\
         <div class="sf-pricing-card' + (p.highlight ? ' sf-pricing-popular' : '') + '">\
-          ' + (p.highlight ? '<div class="sf-pricing-ribbon">Most Popular</div>' : '') + '\
+          ' + (p.highlight ? '<div class="sf-pricing-ribbon">Популярный</div>' : '') + '\
           <div class="sf-pricing-header">\
             <span class="sf-badge ' + p.badge + '">' + escapeHtml(p.name) + '</span>\
             <div class="sf-pricing-price">\
@@ -693,31 +693,31 @@
 
     view.innerHTML = '\
       <div class="sf-page-title-row sf-text-center" style="flex-direction:column;gap:8px;margin-bottom:32px">\
-        <h2>Choose Your Plan</h2>\
-        <p class="sf-muted" style="font-size:14px">Upgrade to unlock more websites, features, and priority support.</p>\
+        <h2>Выберите тариф</h2>\
+        <p class="sf-muted" style="font-size:14px">Улучшите план для доступа к большему количеству сайтов и функций.</p>\
       </div>\
       <div class="sf-pricing-grid">\
         ' + cardsHtml + '\
       </div>\
       <div class="sf-admin-card sf-text-center" style="margin-top:24px">\
-        <h3>Have a Promo Code?</h3>\
+        <h3>Есть промокод?</h3>\
         <div class="sf-row" style="justify-content:center;margin-top:12px">\
-          <input class="sf-input" id="promoInput" placeholder="Enter promo code" style="max-width:240px;text-transform:uppercase" />\
-          <button class="sf-btn secondary" id="applyPromo">Apply</button>\
+          <input class="sf-input" id="promoInput" placeholder="Введите промокод" style="max-width:240px;text-transform:uppercase" />\
+          <button class="sf-btn secondary" id="applyPromo">Применить</button>\
         </div>\
         <p id="promoResult" style="margin-top:8px"></p>\
       </div>\
       <div class="sf-admin-card sf-text-center" style="margin-top:16px">\
-        <p class="sf-muted">Need help choosing? Contact us at <strong>support@seo-fury.com</strong></p>\
+        <p class="sf-muted">Нужна помощь? Напишите нам: <strong>support@seo-fury.com</strong></p>\
       </div>\
     ';
 
     // Promo code validation (if endpoint exists)
     document.getElementById('applyPromo').onclick = function () {
       var code = document.getElementById('promoInput').value.trim();
-      if (!code) { showToast('Please enter a promo code', 'error'); return; }
-      document.getElementById('promoResult').innerHTML = '<span class="sf-muted">Promo code will be applied at checkout.</span>';
-      showToast('Promo code saved');
+      if (!code) { showToast('Введите промокод', 'error'); return; }
+      document.getElementById('promoResult').innerHTML = '<span class="sf-muted">Промокод будет применён при оплате.</span>';
+      showToast('Промокод применён');
     };
   }
 

@@ -7,7 +7,7 @@
   const user = JSON.parse(localStorage.getItem('user') || 'null');
 
   if (!token) { location.href = '/login'; return; }
-  if (user && user.role && user.role !== 'admin') { alert('Access denied. Admin only.'); location.href = '/'; return; }
+  if (user && user.role && user.role !== 'admin') { alert('Доступ запрещён. Только для администраторов.'); location.href = '/'; return; }
 
   // Hide React root and prevent React from interfering
   function killReact() {
@@ -41,7 +41,7 @@
     });
     const res = await fetch(API + path, { ...opts, headers });
     const data = await res.json();
-    if (!res.ok || data.success === false) throw new Error(data.error || 'Request failed');
+    if (!res.ok || data.success === false) throw new Error(data.error || 'Ошибка запроса');
     return data;
   }
 
@@ -84,7 +84,7 @@
   }
 
   function copyToClipboard(text) {
-    navigator.clipboard.writeText(text).then(function () { showToast('Copied!'); });
+    navigator.clipboard.writeText(text).then(function () { showToast('Скопировано!'); });
   }
 
   function escapeHtml(str) {
@@ -164,15 +164,15 @@
       <div class="sf-admin-header">
         <div class="sf-logo">&#9889; SEO Fury</div>
         <nav class="sf-admin-nav">
-          <a href="/dashboard" data-route="/dashboard" class="${active === 'dashboard' ? 'active' : ''}">Dashboard</a>
-          <a href="/licenses" data-route="/licenses" class="${active === 'licenses' ? 'active' : ''}">Licenses</a>
-          <a href="/users" data-route="/users" class="${active === 'users' ? 'active' : ''}">Users</a>
-          <a href="/billing" data-route="/billing" class="${active === 'billing' ? 'active' : ''}">Billing</a>
-          <a href="/promos" data-route="/promos" class="${active === 'promos' ? 'active' : ''}">Promo Codes</a>
+          <a href="/dashboard" data-route="/dashboard" class="${active === 'dashboard' ? 'active' : ''}">Панель</a>
+          <a href="/licenses" data-route="/licenses" class="${active === 'licenses' ? 'active' : ''}">Лицензии</a>
+          <a href="/users" data-route="/users" class="${active === 'users' ? 'active' : ''}">Пользователи</a>
+          <a href="/billing" data-route="/billing" class="${active === 'billing' ? 'active' : ''}">Счета</a>
+          <a href="/promos" data-route="/promos" class="${active === 'promos' ? 'active' : ''}">Промокоды</a>
         </nav>
         <div class="sf-header-right">
           <span class="sf-muted">${escapeHtml(user?.email || '')}</span>
-          <button class="sf-btn secondary" id="sf-logout">Logout</button>
+          <button class="sf-btn secondary" id="sf-logout">Выход</button>
         </div>
       </div>
       <div class="sf-admin-container">
@@ -221,24 +221,24 @@
       var kpiHtml = `
         <div class="sf-kpi-grid">
           <div class="sf-kpi-card sf-kpi-blue">
-            <div class="sf-kpi-label">Total Users</div>
+            <div class="sf-kpi-label">Всего пользователей</div>
             <div class="sf-kpi-value">${data.totalUsers}</div>
-            <div class="sf-kpi-sub">${data.activeUsers} active</div>
+            <div class="sf-kpi-sub">${data.activeUsers} активных</div>
           </div>
           <div class="sf-kpi-card sf-kpi-green">
-            <div class="sf-kpi-label">Active Licenses</div>
+            <div class="sf-kpi-label">Активные лицензии</div>
             <div class="sf-kpi-value">${data.activeLicenses}</div>
-            <div class="sf-kpi-sub">of ${data.totalLicenses} total</div>
+            <div class="sf-kpi-sub">из ${data.totalLicenses} всего</div>
           </div>
           <div class="sf-kpi-card sf-kpi-purple">
-            <div class="sf-kpi-label">Connected Domains</div>
+            <div class="sf-kpi-label">Подключённые домены</div>
             <div class="sf-kpi-value">${data.totalDomains}</div>
             <div class="sf-kpi-sub">&nbsp;</div>
           </div>
           <div class="sf-kpi-card sf-kpi-amber">
-            <div class="sf-kpi-label">Revenue</div>
+            <div class="sf-kpi-label">Доход</div>
             <div class="sf-kpi-value">${formatCurrency(totalRevenue)}</div>
-            <div class="sf-kpi-sub">${(data.revenue || []).map(function (r) { return r.count + ' paid'; }).join(', ') || 'No invoices'}</div>
+            <div class="sf-kpi-sub">${(data.revenue || []).map(function (r) { return r.count + ' оплачено'; }).join(', ') || 'Нет счетов'}</div>
           </div>
         </div>
       `;
@@ -247,11 +247,11 @@
       var chartsHtml = `
         <div class="sf-charts-grid">
           <div class="sf-admin-card">
-            <h3>Registrations (30 days)</h3>
+            <h3>Регистрации (30 дней)</h3>
             <canvas id="sf-chart-registrations" height="220"></canvas>
           </div>
           <div class="sf-admin-card">
-            <h3>License Distribution</h3>
+            <h3>Распределение лицензий</h3>
             <canvas id="sf-chart-distribution" height="220"></canvas>
           </div>
         </div>
@@ -286,17 +286,17 @@
       var tablesHtml = `
         <div class="sf-tables-grid">
           <div class="sf-admin-card">
-            <h3>Recent Activations</h3>
+            <h3>Последние активации</h3>
             <table class="sf-admin-table">
-              <thead><tr><th>Domain</th><th>Plan</th><th>License Key</th><th>Date</th></tr></thead>
-              <tbody>${activationsRows || '<tr><td colspan="4" class="sf-empty">No recent activations</td></tr>'}</tbody>
+              <thead><tr><th>Домен</th><th>Тариф</th><th>Ключ лицензии</th><th>Дата</th></tr></thead>
+              <tbody>${activationsRows || '<tr><td colspan="4" class="sf-empty">Нет активаций</td></tr>'}</tbody>
             </table>
           </div>
           <div class="sf-admin-card">
-            <h3>Recent Users</h3>
+            <h3>Новые пользователи</h3>
             <table class="sf-admin-table">
-              <thead><tr><th>Email</th><th>Name</th><th>Country</th><th>Verified</th><th>Joined</th></tr></thead>
-              <tbody>${recentUsersRows || '<tr><td colspan="5" class="sf-empty">No recent users</td></tr>'}</tbody>
+              <thead><tr><th>Email</th><th>Имя</th><th>Страна</th><th>Подтверждён</th><th>Регистрация</th></tr></thead>
+              <tbody>${recentUsersRows || '<tr><td colspan="5" class="sf-empty">Нет пользователей</td></tr>'}</tbody>
             </table>
           </div>
         </div>
@@ -327,13 +327,13 @@
         countryHtml = `
           <div class="sf-charts-grid">
             <div class="sf-admin-card">
-              <h3>Users by Country</h3>
+              <h3>Пользователи по странам</h3>
               <canvas id="sf-chart-countries" height="220"></canvas>
             </div>
             <div class="sf-admin-card" style="max-height:340px;overflow-y:auto">
-              <h3>Country Breakdown <span class="sf-muted" style="font-weight:400;font-size:12px">(${data.usersWithCountry || 0} identified${unknownCount > 0 ? ', ' + unknownCount + ' unknown' : ''})</span></h3>
+              <h3>По странам <span class="sf-muted" style="font-weight:400;font-size:12px">(${data.usersWithCountry || 0} определено${unknownCount > 0 ? ', ' + unknownCount + ' неизвестно' : ''})</span></h3>
               <table class="sf-admin-table">
-                <thead><tr><th>#</th><th>Country</th><th>Users</th><th>Share</th></tr></thead>
+                <thead><tr><th>#</th><th>Страна</th><th>Пользователи</th><th>Доля</th></tr></thead>
                 <tbody>${countryRows}</tbody>
               </table>
             </div>
@@ -363,7 +363,7 @@
             data: {
               labels: regLabels,
               datasets: [{
-                label: 'Registrations',
+                label: 'Регистрации',
                 data: regData,
                 borderColor: '#3b82f6',
                 backgroundColor: regGradient,
@@ -434,7 +434,7 @@
             data: {
               labels: cLabels,
               datasets: [{
-                label: 'Users',
+                label: 'Пользователи',
                 data: cData,
                 backgroundColor: cColors.slice(0, cData.length),
                 borderRadius: 4,
@@ -497,12 +497,12 @@
               <option value="pro_starter" ${l.plan === 'pro_starter' ? 'selected' : ''}>Pro Starter</option>
               <option value="pro_business" ${l.plan === 'pro_business' ? 'selected' : ''}>Pro Business</option>
               <option value="pro_agency" ${l.plan === 'pro_agency' ? 'selected' : ''}>Pro Agency</option>
-              <option value="lifetime" ${l.plan === 'lifetime' ? 'selected' : ''}>Lifetime</option>
+              <option value="lifetime" ${l.plan === 'lifetime' ? 'selected' : ''}>Навсегда</option>
             </select>
           </td>
           <td class="sf-actions">
-            <button class="sf-btn secondary sf-btn-sm" data-update-plan="${l._id}">Save</button>
-            <button class="sf-btn danger sf-btn-sm" data-del="${l._id}">Delete</button>
+            <button class="sf-btn secondary sf-btn-sm" data-update-plan="${l._id}">Сохранить</button>
+            <button class="sf-btn danger sf-btn-sm" data-del="${l._id}">Удалить</button>
           </td>
         </tr>`;
       }).join('');
@@ -510,61 +510,61 @@
       view.innerHTML = `
         <div class="sf-toggle-section sf-admin-card">
           <div class="sf-toggle-header" id="toggleCreateLicense">
-            <span>&#10133; Create License</span>
+            <span>&#10133; Создать лицензию</span>
           </div>
           <div class="sf-toggle-body" id="createLicenseBody">
             <div class="sf-row">
-              <input class="sf-input" id="createEmail" placeholder="User email" />
+              <input class="sf-input" id="createEmail" placeholder="Email пользователя" />
               <select class="sf-select" id="createPlan">
                 <option value="free">Free</option>
                 <option value="pro_starter">Pro Starter</option>
                 <option value="pro_business">Pro Business</option>
                 <option value="pro_agency">Pro Agency</option>
-                <option value="lifetime">Lifetime</option>
+                <option value="lifetime">Навсегда</option>
               </select>
               <select class="sf-select" id="createInterval">
-                <option value="month">Month</option>
-                <option value="year">Year</option>
-                <option value="lifetime">Lifetime</option>
+                <option value="month">Месяц</option>
+                <option value="year">Год</option>
+                <option value="lifetime">Навсегда</option>
               </select>
-              <button class="sf-btn" id="createLicense">Create</button>
+              <button class="sf-btn" id="createLicense">Создать</button>
             </div>
           </div>
         </div>
 
         <div class="sf-admin-card">
-          <h3>Licenses</h3>
+          <h3>Лицензии</h3>
           <div class="sf-row">
-            <input class="sf-input" id="licenseSearch" placeholder="Search key or domain" value="${escapeHtml(q.search)}"/>
+            <input class="sf-input" id="licenseSearch" placeholder="Поиск по ключу или домену" value="${escapeHtml(q.search)}"/>
             <select class="sf-select" id="licenseStatus">
-              <option value="">All statuses</option>
+              <option value="">Все статусы</option>
               <option value="active" ${q.status === 'active' ? 'selected' : ''}>Active</option>
               <option value="inactive" ${q.status === 'inactive' ? 'selected' : ''}>Inactive</option>
               <option value="expired" ${q.status === 'expired' ? 'selected' : ''}>Expired</option>
               <option value="suspended" ${q.status === 'suspended' ? 'selected' : ''}>Suspended</option>
             </select>
             <select class="sf-select" id="licensePlan">
-              <option value="">All plans</option>
+              <option value="">Все тарифы</option>
               <option value="free" ${q.plan === 'free' ? 'selected' : ''}>Free</option>
               <option value="pro_starter" ${q.plan === 'pro_starter' ? 'selected' : ''}>Pro Starter</option>
               <option value="pro_business" ${q.plan === 'pro_business' ? 'selected' : ''}>Pro Business</option>
               <option value="pro_agency" ${q.plan === 'pro_agency' ? 'selected' : ''}>Pro Agency</option>
-              <option value="lifetime" ${q.plan === 'lifetime' ? 'selected' : ''}>Lifetime</option>
+              <option value="lifetime" ${q.plan === 'lifetime' ? 'selected' : ''}>Навсегда</option>
             </select>
             <button class="sf-btn secondary" id="applyFilters">Apply</button>
           </div>
           <table class="sf-admin-table">
             <thead><tr>
-              <th>Key</th><th>Plan</th><th>Status</th><th>Domains</th><th>User</th><th>Created</th><th>Change Plan</th><th></th>
+              <th>Ключ</th><th>Тариф</th><th>Статус</th><th>Домены</th><th>Пользователь</th><th>Создан</th><th>Сменить тариф</th><th></th>
             </tr></thead>
             <tbody>
-              ${rows || '<tr><td colspan="8" class="sf-empty">No licenses found</td></tr>'}
+              ${rows || '<tr><td colspan="8" class="sf-empty">Лицензии не найдены</td></tr>'}
             </tbody>
           </table>
           <div class="sf-pagination">
-            <button class="sf-btn secondary sf-btn-sm" id="prevPage" ${q.page <= 1 ? 'disabled' : ''}>Prev</button>
-            <span class="sf-muted">Page ${q.page} of ${pagination?.pages || 1}</span>
-            <button class="sf-btn secondary sf-btn-sm" id="nextPage" ${(pagination?.pages || 1) <= q.page ? 'disabled' : ''}>Next</button>
+            <button class="sf-btn secondary sf-btn-sm" id="prevPage" ${q.page <= 1 ? 'disabled' : ''}>Назад</button>
+            <span class="sf-muted">Страница ${q.page} из ${pagination?.pages || 1}</span>
+            <button class="sf-btn secondary sf-btn-sm" id="nextPage" ${(pagination?.pages || 1) <= q.page ? 'disabled' : ''}>Далее</button>
           </div>
         </div>
       `;
@@ -581,10 +581,10 @@
         var email = document.getElementById('createEmail').value.trim();
         var plan = document.getElementById('createPlan').value;
         var interval = document.getElementById('createInterval').value;
-        if (!email) { showToast('Email is required', 'error'); return; }
+        if (!email) { showToast('Укажите email', 'error'); return; }
         try {
           await api('/admin/licenses', { method: 'POST', body: JSON.stringify({ email: email, plan: plan, interval: interval }) });
-          showToast('License created successfully');
+          showToast('Лицензия создана');
           renderLicenses();
         } catch (e) {
           showToast(e.message, 'error');
@@ -614,10 +614,10 @@
       // Delete license
       view.querySelectorAll('[data-del]').forEach(function (btn) {
         btn.onclick = async function () {
-          if (!confirm('Delete this license?')) return;
+          if (!confirm('Удалить лицензию?')) return;
           try {
             await api('/admin/licenses/' + btn.dataset.del, { method: 'DELETE' });
-            showToast('License deleted');
+            showToast('Лицензия удалена');
             renderLicenses();
           } catch (e) {
             showToast(e.message, 'error');
@@ -628,10 +628,10 @@
       // Remove domain
       view.querySelectorAll('[data-domain]').forEach(function (btn) {
         btn.onclick = async function () {
-          if (!confirm('Remove domain from license?')) return;
+          if (!confirm('Удалить домен из лицензии?')) return;
           try {
             await api('/admin/licenses/' + btn.dataset.license + '/domains/' + btn.dataset.domain, { method: 'DELETE' });
-            showToast('Domain removed');
+            showToast('Домен удалён');
             renderLicenses();
           } catch (e) {
             showToast(e.message, 'error');
@@ -648,7 +648,7 @@
               method: 'PUT',
               body: JSON.stringify({ plan: select.value })
             });
-            showToast('Plan updated');
+            showToast('Тариф обновлён');
             renderLicenses();
           } catch (e) {
             showToast(e.message, 'error');
@@ -690,15 +690,15 @@
           <td>${countryDisplay}</td>
           <td><span class="sf-badge ${u.role === 'admin' ? 'admin' : 'user-role'}">${u.role}</span></td>
           <td>${u.isActive
-            ? '<span class="sf-status-dot sf-dot-green"></span> Active'
-            : '<span class="sf-status-dot sf-dot-red"></span> Inactive'}</td>
+            ? '<span class="sf-status-dot sf-dot-green"></span> Активный'
+            : '<span class="sf-status-dot sf-dot-red"></span> Неактивный'}</td>
           <td>${u.isEmailVerified
             ? '<span class="sf-verified">&#10003;</span>'
             : '<span class="sf-unverified">&#10007;</span>'}</td>
           <td>${formatDate(u.createdAt)}</td>
           <td>
             <button class="sf-btn ${u.isActive ? 'danger' : 'secondary'} sf-btn-sm" data-toggle-user="${u._id}" data-active="${u.isActive}">
-              ${u.isActive ? 'Deactivate' : 'Activate'}
+              ${u.isActive ? 'Деактивировать' : 'Активировать'}
             </button>
           </td>
         </tr>`;
@@ -706,21 +706,21 @@
 
       view.innerHTML = `
         <div class="sf-admin-card">
-          <h3>Users</h3>
+          <h3>Пользователи</h3>
           <div class="sf-row">
-            <input class="sf-input" id="userSearch" placeholder="Search email or name" value="${escapeHtml(q.userSearch)}"/>
-            <button class="sf-btn secondary" id="applyUserFilters">Search</button>
+            <input class="sf-input" id="userSearch" placeholder="Поиск по email или имени" value="${escapeHtml(q.userSearch)}"/>
+            <button class="sf-btn secondary" id="applyUserFilters">Найти</button>
           </div>
           <table class="sf-admin-table">
-            <thead><tr><th>Email</th><th>Name</th><th>Country</th><th>Role</th><th>Status</th><th>Verified</th><th>Joined</th><th></th></tr></thead>
+            <thead><tr><th>Email</th><th>Имя</th><th>Страна</th><th>Роль</th><th>Статус</th><th>Подтверждён</th><th>Регистрация</th><th></th></tr></thead>
             <tbody>
-              ${rows || '<tr><td colspan="8" class="sf-empty">No users found</td></tr>'}
+              ${rows || '<tr><td colspan="8" class="sf-empty">Пользователи не найдены</td></tr>'}
             </tbody>
           </table>
           <div class="sf-pagination">
-            <button class="sf-btn secondary sf-btn-sm" id="prevUserPage" ${q.userPage <= 1 ? 'disabled' : ''}>Prev</button>
-            <span class="sf-muted">Page ${q.userPage} of ${pagination?.pages || 1}</span>
-            <button class="sf-btn secondary sf-btn-sm" id="nextUserPage" ${(pagination?.pages || 1) <= q.userPage ? 'disabled' : ''}>Next</button>
+            <button class="sf-btn secondary sf-btn-sm" id="prevUserPage" ${q.userPage <= 1 ? 'disabled' : ''}>Назад</button>
+            <span class="sf-muted">Страница ${q.userPage} из ${pagination?.pages || 1}</span>
+            <button class="sf-btn secondary sf-btn-sm" id="nextUserPage" ${(pagination?.pages || 1) <= q.userPage ? 'disabled' : ''}>Далее</button>
           </div>
         </div>
       `;
@@ -796,8 +796,8 @@
           <td>${formatDate(i.dueAt)}</td>
           <td>${formatDate(i.createdAt)}</td>
           <td class="sf-actions">
-            <button class="sf-btn secondary sf-btn-sm" data-inv-save="${i._id}">Save</button>
-            <button class="sf-btn danger sf-btn-sm" data-inv-del="${i._id}">Delete</button>
+            <button class="sf-btn secondary sf-btn-sm" data-inv-save="${i._id}">Сохранить</button>
+            <button class="sf-btn danger sf-btn-sm" data-inv-del="${i._id}">Удалить</button>
           </td>
         </tr>`;
       }).join('');
@@ -805,13 +805,13 @@
       view.innerHTML = `
         <div class="sf-toggle-section sf-admin-card">
           <div class="sf-toggle-header" id="toggleCreateInvoice">
-            <span>&#10133; Create Invoice</span>
+            <span>&#10133; Создать счёт</span>
           </div>
           <div class="sf-toggle-body" id="createInvoiceBody">
             <div class="sf-row">
-              <input class="sf-input" id="invEmail" placeholder="User email" />
-              <input class="sf-input" id="invLicense" placeholder="License key (optional)" />
-              <input class="sf-input" id="invAmount" type="number" placeholder="Amount" min="0" step="0.01" />
+              <input class="sf-input" id="invEmail" placeholder="Email пользователя" />
+              <input class="sf-input" id="invLicense" placeholder="Ключ лицензии (необязательно)" />
+              <input class="sf-input" id="invAmount" type="number" placeholder="Сумма" min="0" step="0.01" />
               <select class="sf-select" id="invCurrency">
                 <option>USD</option><option>EUR</option><option>GBP</option>
               </select>
@@ -821,17 +821,17 @@
                 <option value="void">Void</option>
               </select>
               <input class="sf-input" id="invDue" type="date" />
-              <button class="sf-btn" id="createInvoice">Create</button>
+              <button class="sf-btn" id="createInvoice">Создать</button>
             </div>
           </div>
         </div>
 
         <div class="sf-admin-card">
-          <h3>Invoices</h3>
+          <h3>Счета</h3>
           <div class="sf-row">
-            <input class="sf-input" id="invSearch" placeholder="Search description" value="${escapeHtml(q.invSearch)}"/>
+            <input class="sf-input" id="invSearch" placeholder="Поиск по описанию" value="${escapeHtml(q.invSearch)}"/>
             <select class="sf-select" id="invStatusFilter">
-              <option value="">All statuses</option>
+              <option value="">Все статусы</option>
               <option value="unpaid" ${q.invStatus === 'unpaid' ? 'selected' : ''}>Unpaid</option>
               <option value="paid" ${q.invStatus === 'paid' ? 'selected' : ''}>Paid</option>
               <option value="void" ${q.invStatus === 'void' ? 'selected' : ''}>Void</option>
@@ -840,16 +840,16 @@
           </div>
           <table class="sf-admin-table">
             <thead><tr>
-              <th>User</th><th>License</th><th>Amount</th><th>Status</th><th>Due</th><th>Created</th><th></th>
+              <th>Пользователь</th><th>Лицензия</th><th>Сумма</th><th>Статус</th><th>Дата</th><th>Создан</th><th></th>
             </tr></thead>
             <tbody>
-              ${rows || '<tr><td colspan="7" class="sf-empty">No invoices found</td></tr>'}
+              ${rows || '<tr><td colspan="7" class="sf-empty">Счета не найдены</td></tr>'}
             </tbody>
           </table>
           <div class="sf-pagination">
-            <button class="sf-btn secondary sf-btn-sm" id="prevInvPage" ${q.invPage <= 1 ? 'disabled' : ''}>Prev</button>
-            <span class="sf-muted">Page ${q.invPage} of ${pagination?.pages || 1}</span>
-            <button class="sf-btn secondary sf-btn-sm" id="nextInvPage" ${(pagination?.pages || 1) <= q.invPage ? 'disabled' : ''}>Next</button>
+            <button class="sf-btn secondary sf-btn-sm" id="prevInvPage" ${q.invPage <= 1 ? 'disabled' : ''}>Назад</button>
+            <span class="sf-muted">Страница ${q.invPage} из ${pagination?.pages || 1}</span>
+            <button class="sf-btn secondary sf-btn-sm" id="nextInvPage" ${(pagination?.pages || 1) <= q.invPage ? 'disabled' : ''}>Далее</button>
           </div>
         </div>
       `;
@@ -869,13 +869,13 @@
         var currency = document.getElementById('invCurrency').value;
         var status = document.getElementById('invStatusCreate').value;
         var dueAt = document.getElementById('invDue').value;
-        if (!email || !amount) { showToast('Email and amount are required', 'error'); return; }
+        if (!email || !amount) { showToast('Укажите email и сумму', 'error'); return; }
         try {
           await api('/admin/invoices', {
             method: 'POST',
             body: JSON.stringify({ email: email, licenseKey: licenseKey, amount: amount, currency: currency, status: status, dueAt: dueAt })
           });
-          showToast('Invoice created successfully');
+          showToast('Счёт создан');
           renderBilling();
         } catch (e) {
           showToast(e.message, 'error');
@@ -905,7 +905,7 @@
               method: 'PUT',
               body: JSON.stringify({ status: select.value })
             });
-            showToast('Invoice status updated');
+            showToast('Статус счёта обновлён');
             renderBilling();
           } catch (e) {
             showToast(e.message, 'error');
@@ -916,10 +916,10 @@
       // Delete invoice
       view.querySelectorAll('[data-inv-del]').forEach(function (btn) {
         btn.onclick = async function () {
-          if (!confirm('Delete this invoice?')) return;
+          if (!confirm('Удалить счёт?')) return;
           try {
             await api('/admin/invoices/' + btn.dataset.invDel, { method: 'DELETE' });
-            showToast('Invoice deleted');
+            showToast('Счёт удалён');
             renderBilling();
           } catch (e) {
             showToast(e.message, 'error');
@@ -962,14 +962,14 @@
           <td>${p.discount}%</td>
           <td>${(p.applicablePlans || []).map(function (pl) { return '<span class="sf-badge ' + planBadgeClass(pl) + '">' + planLabel(pl) + '</span>'; }).join(' ')}</td>
           <td>${progressHtml}</td>
-          <td>${p.expiresAt ? formatDate(p.expiresAt) : 'Never'}</td>
-          <td><span class="sf-badge ${p.isActive ? 'active' : 'inactive'}">${p.isActive ? 'Active' : 'Inactive'}</span></td>
+          <td>${p.expiresAt ? formatDate(p.expiresAt) : 'Никогда'}</td>
+          <td><span class="sf-badge ${p.isActive ? 'active' : 'inactive'}">${p.isActive ? 'Активный' : 'Неактивный'}</span></td>
           <td>${formatDate(p.createdAt)}</td>
           <td class="sf-actions">
             <button class="sf-btn ${p.isActive ? 'secondary' : ''} sf-btn-sm" data-toggle-promo="${p._id}" data-active="${p.isActive}">
-              ${p.isActive ? 'Disable' : 'Enable'}
+              ${p.isActive ? 'Отключить' : 'Включить'}
             </button>
-            <button class="sf-btn danger sf-btn-sm" data-del-promo="${p._id}">Delete</button>
+            <button class="sf-btn danger sf-btn-sm" data-del-promo="${p._id}">Удалить</button>
           </td>
         </tr>`;
       }).join('');
@@ -977,44 +977,44 @@
       view.innerHTML = `
         <div class="sf-toggle-section sf-admin-card">
           <div class="sf-toggle-header" id="toggleCreatePromo">
-            <span>&#10133; Create Promo Code</span>
+            <span>&#10133; Создать промокод</span>
           </div>
           <div class="sf-toggle-body" id="createPromoBody">
             <div class="sf-row">
-              <input class="sf-input" id="promoCode" placeholder="CODE (e.g. SUMMER2026)" style="text-transform:uppercase" />
-              <input class="sf-input" id="promoDiscount" type="number" placeholder="Discount %" min="1" max="100" style="width:110px" />
+              <input class="sf-input" id="promoCode" placeholder="КОД (напр. ЛЕТО2026)" style="text-transform:uppercase" />
+              <input class="sf-input" id="promoDiscount" type="number" placeholder="Скидка %" min="1" max="100" style="width:110px" />
               <select class="sf-select" id="promoPlans">
-                <option value="all">All plans</option>
+                <option value="all">Все тарифы</option>
                 <option value="pro_starter">Pro Starter</option>
                 <option value="pro_business">Pro Business</option>
                 <option value="pro_agency">Pro Agency</option>
-                <option value="lifetime">Lifetime</option>
+                <option value="lifetime">Навсегда</option>
               </select>
-              <input class="sf-input" id="promoMaxUses" type="number" placeholder="Max uses (0=unlimited)" min="0" style="width:150px" />
+              <input class="sf-input" id="promoMaxUses" type="number" placeholder="Макс. использований (0=безлимит)" min="0" style="width:150px" />
               <input class="sf-input" id="promoExpires" type="date" />
-              <button class="sf-btn" id="createPromo">Create</button>
+              <button class="sf-btn" id="createPromo">Создать</button>
             </div>
           </div>
         </div>
 
         <div class="sf-admin-card">
-          <h3>Promo Codes</h3>
+          <h3>Промокоды</h3>
           <div class="sf-row">
-            <input class="sf-input" id="promoSearch" placeholder="Search code..." value="${escapeHtml(q.search || '')}" />
-            <button class="sf-btn secondary" id="applyPromoFilters">Search</button>
+            <input class="sf-input" id="promoSearch" placeholder="Поиск кода..." value="${escapeHtml(q.search || '')}" />
+            <button class="sf-btn secondary" id="applyPromoFilters">Найти</button>
           </div>
           <table class="sf-admin-table">
             <thead><tr>
-              <th>Code</th><th>Discount</th><th>Plans</th><th>Usage</th><th>Expires</th><th>Status</th><th>Created</th><th></th>
+              <th>Код</th><th>Скидка</th><th>Тарифы</th><th>Использовано</th><th>Истекает</th><th>Статус</th><th>Создан</th><th></th>
             </tr></thead>
             <tbody>
-              ${rows || '<tr><td colspan="8" class="sf-empty">No promo codes yet</td></tr>'}
+              ${rows || '<tr><td colspan="8" class="sf-empty">Промокодов пока нет</td></tr>'}
             </tbody>
           </table>
           <div class="sf-pagination">
-            <button class="sf-btn secondary sf-btn-sm" id="prevPromoPage" ${(q.page || 1) <= 1 ? 'disabled' : ''}>Prev</button>
-            <span class="sf-muted">Page ${q.page || 1} of ${pagination?.pages || 1}</span>
-            <button class="sf-btn secondary sf-btn-sm" id="nextPromoPage" ${(pagination?.pages || 1) <= (q.page || 1) ? 'disabled' : ''}>Next</button>
+            <button class="sf-btn secondary sf-btn-sm" id="prevPromoPage" ${(q.page || 1) <= 1 ? 'disabled' : ''}>Назад</button>
+            <span class="sf-muted">Страница ${q.page || 1} из ${pagination?.pages || 1}</span>
+            <button class="sf-btn secondary sf-btn-sm" id="nextPromoPage" ${(pagination?.pages || 1) <= (q.page || 1) ? 'disabled' : ''}>Далее</button>
           </div>
         </div>
       `;
@@ -1033,14 +1033,14 @@
         var plans = document.getElementById('promoPlans').value;
         var maxUses = Number(document.getElementById('promoMaxUses').value) || 0;
         var expiresAt = document.getElementById('promoExpires').value || null;
-        if (!code || !discount) { showToast('Code and discount % are required', 'error'); return; }
-        if (discount < 1 || discount > 100) { showToast('Discount must be 1-100%', 'error'); return; }
+        if (!code || !discount) { showToast('Укажите код и скидку', 'error'); return; }
+        if (discount < 1 || discount > 100) { showToast('Скидка должна быть 1-100%', 'error'); return; }
         try {
           await api('/admin/promo-codes', {
             method: 'POST',
             body: JSON.stringify({ code: code, discount: discount, applicablePlans: [plans], maxUses: maxUses, expiresAt: expiresAt })
           });
-          showToast('Promo code created successfully');
+          showToast('Промокод создан');
           renderPromos();
         } catch (e) {
           showToast(e.message, 'error');
@@ -1084,10 +1084,10 @@
       // Delete promo
       view.querySelectorAll('[data-del-promo]').forEach(function (btn) {
         btn.onclick = async function () {
-          if (!confirm('Delete this promo code?')) return;
+          if (!confirm('Удалить промокод?')) return;
           try {
             await api('/admin/promo-codes/' + btn.dataset.delPromo, { method: 'DELETE' });
-            showToast('Promo code deleted');
+            showToast('Промокод удалён');
             renderPromos();
           } catch (e) {
             showToast(e.message, 'error');
