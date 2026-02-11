@@ -322,6 +322,7 @@
             <div style="font-size:48px;margin-bottom:16px">&#128220;</div>\
             <h3>Лицензий пока нет</h3>\
             <p class="sf-muted" style="margin-top:8px">У вас ещё нет лицензий. Ознакомьтесь с тарифами!</p>\
+            <a href="https://ru.seo-fury.com/seo-fury.zip" class="sf-btn sf-btn-outline" style="margin-top:16px;margin-right:8px" download>Скачать плагин</a>\
             <button class="sf-btn" style="margin-top:16px" id="goToPricing">Смотреть тарифы</button>\
           </div>\
         ';
@@ -413,7 +414,10 @@
       view.innerHTML = '\
         <div class="sf-page-title-row">\
           <h2>Мои лицензии</h2>\
-          <button class="sf-btn" id="goToPricingBtn">Улучшить план</button>\
+          <div>\
+            <a href="https://ru.seo-fury.com/seo-fury.zip" class="sf-btn sf-btn-outline" style="margin-right:8px" download>Скачать плагин</a>\
+            <button class="sf-btn" id="goToPricingBtn">Улучшить план</button>\
+          </div>\
         </div>\
       ' + cardsHtml;
 
